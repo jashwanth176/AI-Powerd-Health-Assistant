@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 export async function GET() {
   try {
     // Replace with actual Google WebSocket endpoint
-    const wsEndpoint = `wss://generativelanguage.googleapis.com/v1beta/models/gemini-pro:streamGenerateContent?key=${process.env.GOOGLE_API_KEY}`
+    const wsEndpoint = `wss://generativelanguage.googleapis.com/v1alpha/models/gemini-pro:streamGenerateContent?key=${process.env.GOOGLE_API_KEY}`
     
     const config = {
       model: "gemini-pro",
@@ -22,7 +22,8 @@ export async function GET() {
           }
         }
       },
-      system_instruction: "You are a helpful AI assistant. Keep your responses concise and natural."
+      system_instruction: "You are a helpful AI assistant. Keep your responses concise and natural.",
+      api_version: "v1alpha"
     }
 
     // Return the WebSocket URL and config

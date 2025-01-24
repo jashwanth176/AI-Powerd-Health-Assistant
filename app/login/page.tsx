@@ -8,6 +8,7 @@ import { Canvas } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 import { Particles } from "../../components/Particles"
 import { useRouter } from "next/navigation"
+import axios from "axios"
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -16,10 +17,30 @@ export default function LoginPage() {
   })
   const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     // Add login logic here
-    console.log("Login attempt:", formData)
+    console.log("Login attempt:", formData);
+
+    try {
+      const response = await axios.post('https://hms-da9g.onrender.com/userLogin', formData);
+      
+      if (response.data.code === 0) {
+        // Login failed
+        alert('Login failed. Please check your credentials.');
+        return;
+      }
+
+      // If we get here, login was successful
+      // Save the response data to localStorage
+      localStorage.setItem('userData', JSON.stringify(response.data));
+      
+      // Redirect to dashboard
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('An error occurred during login. Please try again.');
+    }
   }
 
   return (

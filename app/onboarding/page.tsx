@@ -6,6 +6,7 @@ import ScrollProgress from "../../components/ScrollProgress"
 import FormSection from "../../components/FormSection"
 import ModelSection from "../../components/ModelSection"
 import { useRouter } from "next/navigation"
+import axios from 'axios'
 
 interface FormData {
   name: string
@@ -101,38 +102,29 @@ export default function OnboardingPage() {
   const handleFormSubmit = async (field: string, value: string | string[]) => {
     console.log(`Submitting ${field}:`, value)
     
-    setFormData(prev => ({
-      ...prev,
+    const updatedFormData = {
+      ...formData,
       [field]: value
-    }))
+    }
+    
+    setFormData(updatedFormData)
 
     if (field === "fitnessGoals") {
       try {
-        const finalFormData = {
-          ...formData,
-          [field]: value
-        }
+        console.log('Final form data:', updatedFormData)
         
-        console.log('Final form data:', finalFormData)
+        const response = await axios.post('https://hms-da9g.onrender.com/userSignup', updatedFormData);
         
-        const response = await fetch('/api/auth/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(finalFormData)
-        })
-
-        if (response.ok) {
-          router.push('/dashboard')
+        if (response.data.body && response.data.body.code === 10) {
+          router.push('/login')
         } else {
-          const error = await response.json()
-          console.error('Signup failed:', error)
-          // Show error message to user
+          //alert('Failed to create account.');
+          router.push('/login')
         }
+
       } catch (error) {
-        console.error('Signup error:', error)
-        // Show error message to user
+        console.error('Signup error:', error);
+        alert('An error occurred during signup.');
       }
     } else {
       scrollToNextSection()

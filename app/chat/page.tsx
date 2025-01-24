@@ -89,21 +89,34 @@ export default function ChatPage() {
   }
 
   const handleWebSocketMessage = async (event: MessageEvent) => {
-    if (event.data instanceof Blob) {
-      // Handle audio response
-      const arrayBuffer = await event.data.arrayBuffer()
-      const audioBuffer = await audioContextRef.current!.decodeAudioData(arrayBuffer)
-      const source = audioContextRef.current!.createBufferSource()
-      source.buffer = audioBuffer
-      source.connect(audioContextRef.current!.destination)
-      source.start()
-      setIsAIResponding(true)
-    } else {
-      // Handle JSON response
-      const response = JSON.parse(event.data)
-      if (response.turn_complete) {
-        setIsAIResponding(false)
+    try {
+      if (event.data instanceof Blob) {
+        // Convert blob to audio buffer
+        const arrayBuffer = await event.data.arrayBuffer()
+        const audioContext = audioContextRef.current!
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
+        
+        // Play the audio
+        const source = audioContext.createBufferSource()
+        source.buffer = audioBuffer
+        source.connect(audioContext.destination)
+        source.start()
+        setIsAIResponding(true)
+      } else {
+        // Handle JSON messages
+        const response = JSON.parse(event.data)
+        console.log('Server message:', response)
+        
+        if (response.type === "BidiGenerateContentServerContent") {
+          if (response.turn_complete) {
+            setIsAIResponding(false)
+          }
+        } else if (response.type === "BidiGenerateContentSetupComplete") {
+          console.log('Setup complete')
+        }
       }
+    } catch (error) {
+      console.error('Error handling message:', error)
     }
   }
 

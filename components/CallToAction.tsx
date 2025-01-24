@@ -1,6 +1,9 @@
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 
 const CallToAction = () => {
+  const router = useRouter()
+
   return (
     <section className="py-20 bg-teal-600">
       <div className="container mx-auto px-4 text-center">
@@ -24,6 +27,7 @@ const CallToAction = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
+          onClick={() => router.push('/onboarding')}
           className="bg-white text-teal-600 font-bold py-3 px-8 rounded-full text-lg hover:bg-teal-100 transition duration-300"
         >
           Get Started Now

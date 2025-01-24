@@ -3,17 +3,17 @@ import Image from "next/image"
 
 const testimonials = [
   {
-    name: "Sarah L.",
+    name: "Prannneth",
     text: "This app has completely transformed my approach to health and fitness. The personalized workouts and nutrition advice are spot-on!",
     image: "/placeholder.svg?height=80&width=80",
   },
   {
-    name: "Mike R.",
+    name: "Prudhvi",
     text: "I've tried many health apps, but this one stands out. The mental wellness features have been particularly helpful in managing my stress levels.",
     image: "/placeholder.svg?height=80&width=80",
   },
   {
-    name: "Emily T.",
+    name: "Kamal",
     text: "The tailored approach of this app makes it feel like I have a personal health coach in my pocket. Highly recommended!",
     image: "/placeholder.svg?height=80&width=80",
   },
@@ -23,7 +23,6 @@ const TestimonialCard = ({ name, text, image }) => (
   <div className="bg-slate-700 p-6 rounded-lg shadow-lg">
     <p className="text-lg mb-4 text-gray-300">{text}</p>
     <div className="flex items-center">
-      <Image src={image || "/placeholder.svg"} alt={name} width={40} height={40} className="rounded-full mr-4" />
       <span className="font-semibold text-white">{name}</span>
     </div>
   </div>

@@ -81,13 +81,18 @@ const Dashboard = ({ userName }: DashboardProps) => {
           Welcome, {userName}!
         </motion.h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <Button icon={<Activity />} text="Work Out" />
           <Button icon={<Utensils />} text="Diet Plan" />
           <Button 
             icon={<Brain />} 
             text="Advanced Analyser" 
             onClick={() => router.push('/analyze')}
+          />
+          <Button 
+            icon={<Scale />} 
+            text="BMI Calculator" 
+            onClick={() => router.push('/bmi')}
           />
         </div>
 

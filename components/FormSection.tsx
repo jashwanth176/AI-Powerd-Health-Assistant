@@ -19,16 +19,19 @@ interface FormSectionProps {
     type: string
     options?: string[]
   }
-  onComplete: () => void
+  onComplete: (value: string | string[]) => void
 }
 export default function FormSection({ section, onComplete }: FormSectionProps) {
-  const [value, setValue] = useState<string | string[]>("")
+  const [value, setValue] = useState<string | string[]>(section.type === "multiselect" ? [] : "")
   const isLastSection = section.field === "fitnessGoals"
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (value) {
-      onComplete()
+    if (
+      (Array.isArray(value) && value.length > 0) || 
+      (!Array.isArray(value) && value)
+    ) {
+      onComplete(value)
     }
   }
 
@@ -234,6 +237,10 @@ export default function FormSection({ section, onComplete }: FormSectionProps) {
         <Button 
           type="submit" 
           className="mt-8 bg-gradient-to-r from-teal-500 to-purple-500 text-white hover:opacity-90 text-xl py-6 px-8 rounded-xl w-full transition-all duration-300 shadow-lg hover:shadow-teal-500/20"
+          disabled={
+            (Array.isArray(value) && value.length === 0) || 
+            (!Array.isArray(value) && !value)
+          }
         >
           {isLastSection ? "Submit" : "Continue"}
         </Button>

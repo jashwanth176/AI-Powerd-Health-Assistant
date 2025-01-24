@@ -99,7 +99,7 @@ export default function LoginPage() {
                   onClick={() => router.push('/onboarding')}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Don't have an account? Sign up    
+                  Don&apos;t have an account? Sign up    
                 </button>
               </div>
             </motion.div>

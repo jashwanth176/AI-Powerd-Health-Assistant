@@ -5,12 +5,36 @@ import { motion, useScroll, animate } from "framer-motion"
 import ScrollProgress from "../../components/ScrollProgress"
 import FormSection from "../../components/FormSection"
 import ModelSection from "../../components/ModelSection"
+import { useRouter } from "next/navigation"
+
+interface FormData {
+  name: string
+  email: string
+  password: string
+  age: string
+  weight: string
+  height: string
+  activityLevel: string
+  medicalHistory: string[]
+  fitnessGoals: string[]
+}
 
 export default function OnboardingPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [currentSection, setCurrentSection] = useState(0)
   const { scrollYProgress } = useScroll({ container: containerRef })
-  
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
+    email: "",
+    password: "",
+    age: "",
+    weight: "",
+    height: "",
+    activityLevel: "",
+    medicalHistory: [],
+    fitnessGoals: [],
+  })
+  const router = useRouter()
 
   const formSections = [
     { field: "name", label: "What's your name?", type: "text" },
@@ -74,6 +98,47 @@ export default function OnboardingPage() {
     }
   }
 
+  const handleFormSubmit = async (field: string, value: string | string[]) => {
+    console.log(`Submitting ${field}:`, value)
+    
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+
+    if (field === "fitnessGoals") {
+      try {
+        const finalFormData = {
+          ...formData,
+          [field]: value
+        }
+        
+        console.log('Final form data:', finalFormData)
+        
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(finalFormData)
+        })
+
+        if (response.ok) {
+          router.push('/dashboard')
+        } else {
+          const error = await response.json()
+          console.error('Signup failed:', error)
+          // Show error message to user
+        }
+      } catch (error) {
+        console.error('Signup error:', error)
+        // Show error message to user
+      }
+    } else {
+      scrollToNextSection()
+    }
+  }
+
   return (
     <div className="fixed inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
       <motion.div
@@ -95,13 +160,19 @@ export default function OnboardingPage() {
               <div className="relative w-full max-w-7xl mx-auto px-4 flex items-center justify-center">
                 {index % 2 === 0 ? (
                   <>
-                    <FormSection section={section} onComplete={scrollToNextSection} />
+                    <FormSection 
+                      section={section} 
+                      onComplete={(value) => handleFormSubmit(section.field, value)} 
+                    />
                     <ModelSection modelIndex={index} />
                   </>
                 ) : (
                   <>
                     <ModelSection modelIndex={index} />
-                    <FormSection section={section} onComplete={scrollToNextSection} />
+                    <FormSection 
+                      section={section} 
+                      onComplete={(value) => handleFormSubmit(section.field, value)} 
+                    />
                   </>
                 )}
               </div>

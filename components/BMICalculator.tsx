@@ -10,7 +10,7 @@ interface BMICalculatorProps {
   initialAge?: number
 }
 
-export default function BMICalculator({ setBMI, setAge, setHealthIssues, initialAge }: BMICalculatorProps) {
+export default function BMICalculator({ setBMI, initialAge }: BMICalculatorProps) {
   const [height, setHeight] = useState("")
   const [weight, setWeight] = useState("")
 

@@ -1,5 +1,4 @@
 import { motion, useScroll, useTransform } from "framer-motion"
-import Image from "next/image"
 
 const testimonials = [
   {
@@ -19,7 +18,7 @@ const testimonials = [
   },
 ]
 
-const TestimonialCard = ({ name, text, image }) => (
+const TestimonialCard = ({ name, text }: { name: string; text: string }) => (
   <div className="bg-slate-700 p-6 rounded-lg shadow-lg">
     <p className="text-lg mb-4 text-gray-300">{text}</p>
     <div className="flex items-center">

@@ -29,7 +29,7 @@ export default function LoginPage() {
           <OrbitControls enableZoom={false} />
           <ambientLight intensity={0.7} />
           <directionalLight position={[10, 10, 5]} intensity={1.2} />
-          <Particles count={2000} size={0.015} />
+          <Particles />
         </Canvas>
       </div>
       
@@ -99,7 +99,7 @@ export default function LoginPage() {
                   onClick={() => router.push('/onboarding')}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Don't have an account? Sign up
+                  Don't have an account? Sign up    
                 </button>
               </div>
             </motion.div>

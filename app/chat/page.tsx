@@ -11,113 +11,144 @@ import { Mic, MicOff } from "lucide-react"
 export default function ChatPage() {
   const [isListening, setIsListening] = useState(false)
   const [isAIResponding, setIsAIResponding] = useState(false)
+  const [transcription, setTranscription] = useState("")
   const audioContextRef = useRef<AudioContext | null>(null)
   const websocketRef = useRef<WebSocket | null>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
 
   useEffect(() => {
     audioContextRef.current = new AudioContext()
     return () => {
-      websocketRef.current?.close()
-      audioContextRef.current?.close()
+      cleanupResources()
     }
   }, [])
 
+  const cleanupResources = () => {
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop()
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop())
+    }
+    websocketRef.current?.close()
+    audioContextRef.current?.close()
+  }
+
   const startListening = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      // Get session URL and config
       const response = await fetch('/api/chat/session')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       const { sessionUrl, config } = await response.json()
       
-      console.log('Connecting to WebSocket:', sessionUrl)
+      // Get audio stream
+      streamRef.current = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          sampleRate: 16000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true
+        } 
+      })
       
+      // Setup WebSocket
       websocketRef.current = new WebSocket(sessionUrl)
       
       websocketRef.current.onopen = () => {
         console.log('WebSocket connected')
-        const setupMessage = {
+        websocketRef.current?.send(JSON.stringify({
           type: "BidiGenerateContentSetup",
-          config
-        }
-        websocketRef.current?.send(JSON.stringify(setupMessage))
+          ...config
+        }))
         setIsListening(true)
       }
       
-      websocketRef.current.onerror = (error) => {
-        console.error('WebSocket error:', error)
-        setIsListening(false)
-      }
-      
-      websocketRef.current.onclose = () => {
-        console.log('WebSocket closed')
-        setIsListening(false)
-      }
-      
       websocketRef.current.onmessage = handleWebSocketMessage
+      websocketRef.current.onerror = handleWebSocketError
+      websocketRef.current.onclose = handleWebSocketClose
       
-      const mediaRecorder = new MediaRecorder(stream, {
+      // Setup MediaRecorder
+      mediaRecorderRef.current = new MediaRecorder(streamRef.current, {
         mimeType: 'audio/webm;codecs=opus'
       })
       
-      mediaRecorder.ondataavailable = async (event) => {
+      mediaRecorderRef.current.ondataavailable = async (event) => {
         if (websocketRef.current?.readyState === WebSocket.OPEN) {
           const audioBlob = event.data
           const arrayBuffer = await audioBlob.arrayBuffer()
           const base64Audio = btoa(
-            String.fromCharCode.apply(null, Array.from(new Uint8Array(arrayBuffer)))
+            String.fromCharCode(...new Uint8Array(arrayBuffer))
           )
           
-          const message = {
+          websocketRef.current.send(JSON.stringify({
             type: "BidiGenerateContentRealtimeInput",
             media_chunks: [{
               mimeType: "audio/webm;codecs=opus",
               data: base64Audio
             }]
-          }
-          websocketRef.current.send(JSON.stringify(message))
+          }))
         }
       }
-      mediaRecorder.start(100)
+      
+      mediaRecorderRef.current.start(100) // Send audio chunks every 100ms
     } catch (error) {
       console.error('Error starting voice chat:', error)
+      cleanupResources()
       setIsListening(false)
     }
   }
 
   const stopListening = () => {
-    websocketRef.current?.close()
+    cleanupResources()
     setIsListening(false)
+    setIsAIResponding(false)
   }
 
   const handleWebSocketMessage = async (event: MessageEvent) => {
     try {
       if (event.data instanceof Blob) {
-        // Convert blob to audio buffer
+        // Handle audio response
         const arrayBuffer = await event.data.arrayBuffer()
         const audioContext = audioContextRef.current!
         const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
         
-        // Play the audio
         const source = audioContext.createBufferSource()
         source.buffer = audioBuffer
         source.connect(audioContext.destination)
         source.start()
         setIsAIResponding(true)
       } else {
-        // Handle JSON messages
+        // Handle text response
         const response = JSON.parse(event.data)
         console.log('Server message:', response)
         
         if (response.type === "BidiGenerateContentServerContent") {
+          if (response.model_turn?.parts?.[0]?.text) {
+            setTranscription(prev => prev + response.model_turn.parts[0].text)
+          }
           if (response.turn_complete) {
             setIsAIResponding(false)
           }
-        } else if (response.type === "BidiGenerateContentSetupComplete") {
-          console.log('Setup complete')
         }
       }
     } catch (error) {
       console.error('Error handling message:', error)
     }
+  }
+
+  const handleWebSocketError = (error: Event) => {
+    console.error('WebSocket error:', error)
+    cleanupResources()
+    setIsListening(false)
+  }
+
+  const handleWebSocketClose = () => {
+    console.log('WebSocket closed')
+    cleanupResources()
+    setIsListening(false)
   }
 
   return (
@@ -131,7 +162,7 @@ export default function ChatPage() {
         </Canvas>
       </div>
 
-      <div className="relative flex flex-col items-center justify-center h-screen p-4">
+      <div className="relative flex flex-col items-center justify-center min-h-screen p-4">
         <motion.h1 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -139,6 +170,16 @@ export default function ChatPage() {
         >
           Voice Chat with AI
         </motion.h1>
+
+        {transcription && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="max-w-2xl w-full mb-8 p-4 rounded-lg bg-slate-800/50 backdrop-blur-sm"
+          >
+            <p className="text-gray-200 whitespace-pre-line">{transcription}</p>
+          </motion.div>
+        )}
 
         {isAIResponding && <WaveAnimation />}
 

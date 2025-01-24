@@ -94,12 +94,12 @@ export default function Home() {
             </div>
             <div className="space-y-4 text-gray-300">
               <p>
-                While BMI is a widely used screening tool, it's important to understand its limitations:
+                While BMI is a widely used screening tool, it&apos;s important to understand its limitations:
               </p>
               <ul className="list-disc list-inside space-y-2">
-                <li>Doesn't distinguish between weight from muscle and fat</li>
+                <li>Doesn&apos;t distinguish between weight from muscle and fat</li>
                 <li>May not be accurate for athletes or bodybuilders</li>
-                <li>Doesn't account for body fat distribution</li>
+                <li>Doesn&apos;t account for body fat distribution</li>
                 <li>May not be suitable for elderly people or certain ethnic groups</li>
               </ul>
               <p className="text-teal-400 font-semibold">

@@ -1,12 +1,33 @@
 import { motion } from "framer-motion"
-import { MapPin, Clock } from "lucide-react"
+import { MapPin, Clock, Share2 } from "lucide-react"
 import { FootprintsIcon } from "lucide-react"
+import { useState } from 'react'
+import EmailShareAlert from './EmailShareAlert'
 
 const ActivityList = () => {
   const activities = [
     { name: "Small Walk", distance: "0.2 km", location: "Vijayawada", time: "6 min" },
   ]
   const dailySteps = 3211
+  const [showEmailAlert, setShowEmailAlert] = useState(false)
+
+  const handleShareClick = async (email: string) => {
+    try {
+      const response = await fetch('/api/email/share-activity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      })
+      
+      if (!response.ok) throw new Error('Failed to send email')
+      
+      // Show success message
+      alert('Activity shared successfully!')
+    } catch (error) {
+      console.error('Error sharing activity:', error)
+      alert('Failed to share activity')
+    }
+  }
 
   return (
     <motion.div
@@ -28,22 +49,33 @@ const ActivityList = () => {
             key={index}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
-            className="bg-slate-700/50 p-4 rounded-xl border border-teal-500/20"
+            transition={{ delay: index * 0.1 }}
+            className="bg-slate-800/50 p-4 rounded-lg"
           >
-            <h3 className="text-xl font-semibold mb-2 text-teal-300">{activity.name}</h3>
-            <div className="flex items-center space-x-4 text-gray-300">
-              <span>{activity.distance}</span>
-              <span className="flex items-center">
-                <MapPin size={16} className="mr-1 text-purple-400" /> {activity.location}
-              </span>
-              <span className="flex items-center">
-                <Clock size={16} className="mr-1 text-pink-400" /> {activity.time}
-              </span>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-lg">{activity.name}</h3>
+                <div className="text-sm text-gray-400">
+                  {activity.distance} • {activity.time} • {activity.location}
+                </div>
+              </div>
+              <button
+                onClick={() => setShowEmailAlert(true)}
+                className="text-teal-400 hover:text-teal-300 p-2"
+              >
+                <Share2 size={20} />
+              </button>
             </div>
           </motion.li>
         ))}
       </ul>
+      
+      {showEmailAlert && (
+        <EmailShareAlert
+          onClose={() => setShowEmailAlert(false)}
+          onSubmit={handleShareClick}
+        />
+      )}
     </motion.div>
   )
 }

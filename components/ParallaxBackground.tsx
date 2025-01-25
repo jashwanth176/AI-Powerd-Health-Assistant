@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { motion, useScroll, useTransform, useSpring } from "framer-motion"
 
 export default function ParallaxBackground() {

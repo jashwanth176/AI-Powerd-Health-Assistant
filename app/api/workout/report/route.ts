@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     
     Workout Statistics:
     Duration: ${Math.round((workoutStats.endTime - workoutStats.startTime) / 1000)} seconds
-    Completed Exercises: ${completedExercises.map(ex => ex.name).join(', ')}
+    Completed Exercises: ${completedExercises.map((ex: any) => ex.name).join(', ')}
     
     Provide a brief analysis of their performance and suggestions for next time.
     Use **bold text** for important metrics and key points.

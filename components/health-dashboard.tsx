@@ -37,6 +37,31 @@ const mockData = {
   ],
 }
 
+interface ProgressData {
+  progress: {
+    stepsProgress: number
+    workoutsProgress: number
+    weightProgress: number
+  }
+  fitnessGoals: {
+    dailySteps: number
+    weeklyWorkouts: number
+    weightGoal: number
+  }
+}
+
+interface OverviewData {
+  fitnessGoals: {
+    dailySteps: number
+    weeklyWorkouts: number
+    weightGoal: number
+  }
+  weightHistory: Array<{
+    date: string
+    weight: number
+  }>
+}
+
 export default function HealthDashboard() {
   const [activeTab, setActiveTab] = useState("overview")
 
@@ -85,11 +110,17 @@ export default function HealthDashboard() {
   )
 }
 
-function MetricCard({ title, value, icon }) {
+interface MetricCardProps {
+  title: string
+  value: string | number
+  icon: React.ReactNode
+}
+
+function MetricCard({ title, value, icon }: MetricCardProps) {
   return (
     <Card className="bg-slate-800">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-gray-300">{title}</CardTitle>
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
         {icon}
       </CardHeader>
       <CardContent>
@@ -99,7 +130,7 @@ function MetricCard({ title, value, icon }) {
   )
 }
 
-function OverviewTab({ data }) {
+function OverviewTab({ data }: { data: OverviewData }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <Card className="bg-slate-800">
@@ -143,7 +174,7 @@ function OverviewTab({ data }) {
   )
 }
 
-function ProgressTab({ data }) {
+function ProgressTab({ data }: { data: ProgressData }) {
   return (
     <div className="space-y-6">
       <ProgressCard
@@ -168,7 +199,14 @@ function ProgressTab({ data }) {
   )
 }
 
-function ProgressCard({ title, progress, goal, unit }) {
+interface ProgressCardProps {
+  title: string
+  progress: number
+  goal: number
+  unit: string
+}
+
+function ProgressCard({ title, progress, goal, unit }: ProgressCardProps) {
   return (
     <Card className="bg-slate-800">
       <CardHeader>

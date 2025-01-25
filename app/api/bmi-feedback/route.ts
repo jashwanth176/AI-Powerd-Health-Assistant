@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     prompt += ` with a BMI of ${bmi}`
 
     // Add health issues from both current input and stored medical history
-    let allHealthIssues = []
+    const allHealthIssues = []
     if (healthIssues) {
       allHealthIssues.push(healthIssues)
     }

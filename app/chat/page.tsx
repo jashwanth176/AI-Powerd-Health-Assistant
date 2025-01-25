@@ -80,7 +80,8 @@ export default function ChatPage() {
           const audioBlob = event.data
           const arrayBuffer = await audioBlob.arrayBuffer()
           const base64Audio = btoa(
-            String.fromCharCode(...new Uint8Array(arrayBuffer))
+            //String.fromCharCode(...new Uint8Array(arrayBuffer))
+            String.fromCharCode(...Array.from(new Uint8Array(arrayBuffer)))
           )
           
           websocketRef.current.send(JSON.stringify({

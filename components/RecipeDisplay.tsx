@@ -114,7 +114,7 @@ export default function RecipeDisplay({ mealType, foodItems }: { mealType: strin
 
       </motion.div>
 
-      <BenefitsDisplay selectedRecipe={recipe.title} benefits={benefits} />
+      <BenefitsDisplay selectedRecipe={recipe.title || null} />
     </div>
   )
 }

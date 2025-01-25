@@ -26,8 +26,8 @@ export default function AnimatedBackground() {
       speedY: number
 
       constructor() {
-        this.x = Math.random() * canvas.width
-        this.y = Math.random() * canvas.height
+        this.x = Math.random() * canvas!.width
+        this.y = Math.random() * canvas!.height
         this.size = Math.random() * 5 + 1
         this.speedX = Math.random() * 3 - 1.5
         this.speedY = Math.random() * 3 - 1.5
@@ -63,18 +63,18 @@ export default function AnimatedBackground() {
 
     function animate() {
       if (!ctx) return
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, canvas!.width, canvas!.height)
       if (particles.length < 100) {
         particles.push(new Particle())
       }
       handleParticles()
-      requestAnimationFrame(animate)
+      return requestAnimationFrame(animate)
     }
 
-    animate()
+    const animationId = animate()
 
     return () => {
-      cancelAnimationFrame(animate)
+      if (animationId) cancelAnimationFrame(animationId)
     }
   }, [])
 

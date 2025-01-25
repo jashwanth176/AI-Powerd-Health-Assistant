@@ -3,10 +3,9 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "rec
 
 interface WeightLogProps {
   entries: Array<{ date: string; weight: number }>
-  addEntry: () => void
 }
 
-export default function WeightLog({ entries, addEntry }: WeightLogProps) {
+export default function WeightLog({ entries }: WeightLogProps) {
   return (
     <Card className="p-6 bg-slate-800 backdrop-blur-xl border-teal-500/20 rounded-lg shadow-lg h-[300px]">
       <h2 className="text-xl font-semibold mb-4 text-white">Weight Progress</h2>

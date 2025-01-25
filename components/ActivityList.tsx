@@ -1,7 +1,7 @@
-import { motion } from "framer-motion"
-import { MapPin, Clock, Share2 } from "lucide-react"
 import { FootprintsIcon } from "lucide-react"
-import { useState } from 'react'
+import { motion } from "framer-motion"
+import { useState } from "react"
+import { MapPin, Clock, Share2 } from "lucide-react"
 import EmailShareAlert from './EmailShareAlert'
 
 const ActivityList = () => {

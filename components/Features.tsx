@@ -20,7 +20,13 @@ const features = [
   },
 ]
 
-const FeatureCard = ({ icon: Icon, title, description }) => {
+interface FeatureCardProps {
+  icon: React.ElementType
+  title: string
+  description: string
+}
+
+const FeatureCard = ({ icon: Icon, title, description }: FeatureCardProps) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,

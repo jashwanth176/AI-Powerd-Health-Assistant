@@ -14,7 +14,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js"
-import { Plus, Activity, Utensils, Brain, Scale } from "lucide-react"
+import { Activity, Utensils, Brain, Scale } from "lucide-react"
 import { useRouter } from "next/navigation"
 import WeightLog from "./WeightLog"
 import FoodLog from "./FoodLog"
@@ -98,13 +98,15 @@ const Dashboard = ({ userName }: DashboardProps) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div className="space-y-4">
-            <WeightLog entries={weightEntries} addEntry={addWeightEntry} />
+            <WeightLog entries={weightEntries} />
             <div className="flex gap-2">
               <input
                 type="number"
                 value={newWeight}
                 onChange={(e) => setNewWeight(e.target.value)}
                 placeholder="Enter weight (kg)"
+                min="30"
+                max="300"
                 className="bg-slate-800 p-2 rounded-lg flex-1 border border-teal-500/30 focus:border-teal-500 text-white"
               />
               <button
@@ -138,6 +140,31 @@ const Dashboard = ({ userName }: DashboardProps) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <ActivityList />
           <AnalyticsPanel />
+        </div>
+
+        <div className="mt-8 bg-slate-800/50 backdrop-blur-xl p-6 rounded-lg shadow-lg border border-teal-500/20">
+          <h3 className="text-xl font-semibold mb-4">Workout Streak</h3>
+          <div className="flex gap-2">
+            {[...Array(7)].map((_, index) => (
+              <div
+                key={index}
+                className={`flex-1 h-3 rounded-full ${
+                  index === 0 
+                    ? "bg-teal-500" 
+                    : "bg-slate-700"
+                }`}
+              />
+            ))}
+          </div>
+          <div className="flex justify-between mt-2 text-sm text-gray-400">
+            <span>Day 1</span>
+            <span>Day 2</span>
+            <span>Day 3</span>
+            <span>Day 4</span>
+            <span>Day 5</span>
+            <span>Day 6</span>
+            <span>Day 7</span>
+          </div>
         </div>
       </motion.div>
     </div>

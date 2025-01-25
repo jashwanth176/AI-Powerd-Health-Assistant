@@ -2,7 +2,12 @@ import { useState } from "react"
 import { Utensils } from "lucide-react"
 import { motion } from "framer-motion"
 
-const FoodLog = ({ entries, addEntry }: { entries: any[]; addEntry: (calories: number) => void }) => {
+interface FoodLogProps {
+  entries: Array<{ date: string; calories: number }>
+  addEntry: (calories: number) => void
+}
+
+const FoodLog = ({ entries, addEntry }: FoodLogProps) => {
   const [foodItem, setFoodItem] = useState("")
   const [suggestedCalories, setSuggestedCalories] = useState<number | null>(null)
   const [customCalories, setCustomCalories] = useState("")

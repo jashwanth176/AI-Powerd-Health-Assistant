@@ -52,19 +52,19 @@ const illustrations = [
   },
 ]
 
-export default function ModelSection({ modelIndex }: { modelIndex: number }) {
+export default function ModelSection({ modelIndex, className = "" }: { modelIndex: number, className?: string }) {
   const illustration = illustrations[modelIndex]
 
   return (
     <motion.div 
-      className="w-1/2 h-full relative"
+      className={`relative h-[250px] sm:h-[300px] lg:h-full ${className}`}
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -50 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
     >
       <Canvas className="absolute inset-0">
-        <OrbitControls enableZoom={false} />
+        <OrbitControls enableZoom={false} enableRotate={false} />
         <ambientLight intensity={0.7} />
         <directionalLight position={[10, 10, 5]} intensity={1.2} />
         <Particles />
@@ -74,7 +74,7 @@ export default function ModelSection({ modelIndex }: { modelIndex: number }) {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: illustration.scale }}
           transition={{ duration: 0.5 }}
-          className="relative w-96 h-96 rounded-lg p-4 backdrop-blur-xl bg-black/30 border border-white/10"
+          className="relative w-[200px] h-[200px] sm:w-[280px] sm:h-[280px] md:w-96 md:h-96 rounded-lg p-4 backdrop-blur-xl bg-black/30 border border-white/10"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-800/80 to-slate-900/80 rounded-lg" />
           <Image
@@ -83,6 +83,7 @@ export default function ModelSection({ modelIndex }: { modelIndex: number }) {
             width={384}
             height={384}
             className="object-contain rounded-lg relative z-10"
+            priority
             unoptimized
           />
         </motion.div>

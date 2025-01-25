@@ -61,24 +61,25 @@ const Hero = () => {
           <p className="text-xl md:text-2xl mb-8 text-gray-300">
             Tailored workouts, nutrition plans, and mental wellness support
           </p>
-          <div className="space-x-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 px-4">
             <button 
               onClick={() => router.push('/onboarding')}
-              className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300"
+              className="w-full sm:w-auto bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 md:px-8 rounded-full text-base md:text-lg transition duration-300"
             >
               Get Started
             </button>
             <button 
-            onClick={() => router.push('/login')} 
-            className="bg-transparent hover:bg-white/10 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 border-2 border-white">
-            Log In
-          </button>
-          <button 
-            onClick={() => router.push('/analyze')}
-            className="bg-transparent hover:bg-white/10 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 border-2 border-white"
-          >
-            Try Analyzer
-          </button>
+              onClick={() => router.push('/login')} 
+              className="w-full sm:w-auto bg-transparent hover:bg-white/10 text-white font-bold py-3 px-6 md:px-8 rounded-full text-base md:text-lg transition duration-300 border-2 border-white"
+            >
+              Log In
+            </button>
+            <button 
+              onClick={() => router.push('/analyze')}
+              className="w-full sm:w-auto bg-transparent hover:bg-white/10 text-white font-bold py-3 px-6 md:px-8 rounded-full text-base md:text-lg transition duration-300 border-2 border-white"
+            >
+              Try Analyzer
+            </button>
           </div>
         </motion.div>
       </motion.div>

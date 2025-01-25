@@ -142,28 +142,30 @@ export default function OnboardingPage() {
           {formSections.map((section, index) => (
             <motion.div
               key={section.field}
-              className="h-screen w-screen flex items-center justify-center relative bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900"
+              className="min-h-screen w-screen flex items-center justify-center relative bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 py-6 sm:py-8"
               style={{
                 position: 'relative',
                 zIndex: formSections.length - index
               }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-teal-500/5 to-purple-500/5" />
-              <div className="relative w-full max-w-7xl mx-auto px-4 flex items-center justify-center">
+              <div className="relative w-full max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8">
                 {index % 2 === 0 ? (
                   <>
                     <FormSection 
                       section={section} 
                       onComplete={(value) => handleFormSubmit(section.field, value)} 
+                      className="w-full md:w-1/2"
                     />
-                    <ModelSection modelIndex={index} />
+                    <ModelSection modelIndex={index} className="w-full md:w-1/2 mt-4 sm:mt-6 md:mt-0" />
                   </>
                 ) : (
                   <>
-                    <ModelSection modelIndex={index} />
+                    <ModelSection modelIndex={index} className="w-full md:w-1/2" />
                     <FormSection 
                       section={section} 
                       onComplete={(value) => handleFormSubmit(section.field, value)} 
+                      className="w-full md:w-1/2 mt-4 sm:mt-6 md:mt-0"
                     />
                   </>
                 )}

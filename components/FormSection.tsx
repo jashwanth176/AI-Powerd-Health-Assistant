@@ -20,8 +20,9 @@ interface FormSectionProps {
     options?: string[]
   }
   onComplete: (value: string | string[]) => void
+  className?: string
 }
-export default function FormSection({ section, onComplete }: FormSectionProps) {
+export default function FormSection({ section, onComplete, className }: FormSectionProps) {
   const [value, setValue] = useState<string | string[]>(section.type === "multiselect" ? [] : "")
   const isLastSection = section.field === "fitnessGoals"
 
@@ -225,18 +226,18 @@ export default function FormSection({ section, onComplete }: FormSectionProps) {
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 50 }}
-      className="w-1/2 p-12 bg-slate-900/50 backdrop-blur-lg rounded-2xl border border-white/10 shadow-xl"
+      className={`${className} p-4 sm:p-6 md:p-12 bg-slate-900/50 backdrop-blur-lg rounded-2xl border border-white/10 shadow-xl`}
     >
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <Label className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 md:space-y-8">
+        <Label className="text-xl sm:text-2xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
           {section.label}
         </Label>
-        <div className="mt-8">
+        <div className="mt-4 sm:mt-6 md:mt-8">
           {renderInput()}
         </div>
         <Button 
           type="submit" 
-          className="mt-8 bg-gradient-to-r from-teal-500 to-purple-500 text-white hover:opacity-90 text-xl py-6 px-8 rounded-xl w-full transition-all duration-300 shadow-lg hover:shadow-teal-500/20"
+          className="mt-4 sm:mt-6 md:mt-8 bg-gradient-to-r from-teal-500 to-purple-500 text-white hover:opacity-90 text-base sm:text-lg md:text-xl py-3 sm:py-4 md:py-6 px-4 sm:px-6 md:px-8 rounded-xl w-full transition-all duration-300 shadow-lg hover:shadow-teal-500/20"
           disabled={
             (Array.isArray(value) && value.length === 0) || 
             (!Array.isArray(value) && !value)

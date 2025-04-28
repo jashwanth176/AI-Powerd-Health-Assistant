@@ -1,0 +1,45 @@
+name: Project Management
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+      - labeled
+      - closed
+  pull_request:
+    types:
+      - opened
+      - edited
+      - labeled
+      - closed
+  project_card:
+    types:
+      - created
+      - moved
+      - deleted
+
+jobs:
+  update-project-board:
+    name: Update Project Board
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Update project board
+        uses: actions/add-to-project@v1
+        with:
+          project-url: ${{ secrets.PROJECT_BOARD_URL }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          column-name: 'To Do' # Change this to the default column name on your project board
+
+  label-issues-prs:
+    name: Label Issues and PRs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-label issues
+        uses: actions/labeler@v4
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yml
